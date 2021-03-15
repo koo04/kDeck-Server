@@ -2,10 +2,12 @@ syntax = "proto3";
 
 package server;
 
-import "google/protobuf/timestamp.proto";
-
 option go_package = "github.com/koo04/kdock-server/proto";
 
-message Button {
-    string name = 1;
+message Message {
+  string body = 1;
+}
+
+service ChatService {
+  rpc SayHello(Message) returns (Message) {}
 }
