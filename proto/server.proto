@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package server;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/koo04/kdock-server/proto";
+
+message Button {
+    string name = 1;
+}
