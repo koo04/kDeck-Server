@@ -1,14 +1,19 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net"
 
+	"github.com/koo04/kdeck-server/proto/server"
 	"google.golang.org/grpc"
 )
 
 func main() {
-	lis, err := net.Listen("tcp", ":9000")
+
+	fmt.Println("Go gRPC Beginners Tutorial!")
+
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 9000))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}

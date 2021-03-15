@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package server;
+package data;
 
 option go_package = "github.com/koo04/kdeck-server/proto";
 
