@@ -1,4 +1,4 @@
-module github.com/koo04/kdock-server
+module github.com/koo04/kdeck-server
 
 go 1.16
 
