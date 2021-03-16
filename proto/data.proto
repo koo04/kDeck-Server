@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package data;
 
-option go_package = "github.com/koo04/kdeck-server/proto/data";
+option go_package = "proto/data";
 
 message SayHelloRequest {
   string body = 1;
