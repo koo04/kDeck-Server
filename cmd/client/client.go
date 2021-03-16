@@ -2,45 +2,26 @@ package main
 
 import (
 	"context"
-	"io"
 	"log"
 
-	pb "github.com/koo04/kdeck-server/proto"
+	"github.com/koo04/kdeck-server/proto/data"
 
 	"google.golang.org/grpc"
 )
 
 func main() {
-	// dial server
-	conn, err := grpc.Dial(":50005", grpc.WithInsecure())
+	var conn *grpc.ClientConn
+	conn, err := grpc.Dial(":9000", grpc.WithInsecure())
 	if err != nil {
-		log.Fatalf("can not connect with server %v", err)
+		log.Fatalf("did not connect: %s", err)
 	}
+	defer conn.Close()
 
-	// create stream
-	client := pb.NewStreamServiceClient(conn)
-	in := &pb.Request{Id: 1}
-	stream, err := client.FetchResponse(context.Background(), in)
+	c := data.NewDataServiceClient(conn)
+
+	response, err := c.SayHello(context.Background(), &data.SayHelloRequest{Body: "Hello From Client!"})
 	if err != nil {
-		log.Fatalf("open stream error %v", err)
+		log.Fatalf("Error when calling SayHello: %s", err)
 	}
-
-	done := make(chan bool)
-
-	go func() {
-		for {
-			resp, err := stream.Recv()
-			if err == io.EOF {
-				done <- true //means stream is finished
-				return
-			}
-			if err != nil {
-				log.Fatalf("cannot receive %v", err)
-			}
-			log.Printf("Resp received: %s", resp.Result)
-		}
-	}()
-
-	<-done //we will wait until all response is received
-	log.Printf("finished")
+	log.Printf("Response from server: %s", response.Body)
 }

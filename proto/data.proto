@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package data;
+
+option go_package = "proto/data";
+
+message SayHelloRequest {
+  string body = 1;
+}
+
+message SayHelloResponse {
+  string body = 1;
+}
+
+service DataService {
+  rpc SayHello(SayHelloRequest) returns (SayHelloResponse) {}
+}

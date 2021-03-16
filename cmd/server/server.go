@@ -5,7 +5,8 @@ import (
 	"log"
 	"net"
 
-	"github.com/koo04/kdeck-server/proto/server"
+	"github.com/koo04/kdeck-server/api"
+	"github.com/koo04/kdeck-server/proto/data"
 	"google.golang.org/grpc"
 )
 
@@ -18,11 +19,9 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	s := server.Server{}
-
 	grpcServer := grpc.NewServer()
 
-	server.RegisterChatServiceServer(grpcServer, &s)
+	data.RegisterDataServiceServer(grpcServer, &api.Server{})
 
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %s", err)
