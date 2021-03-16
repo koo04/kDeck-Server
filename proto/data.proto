@@ -4,14 +4,12 @@ package data;
 
 option go_package = "proto/data";
 
-message SayHelloRequest {
-  string body = 1;
-}
+message Empty {}
 
-message SayHelloResponse {
+message GetButtonsResponse {
   string body = 1;
 }
 
 service DataService {
-  rpc SayHello(SayHelloRequest) returns (SayHelloResponse) {}
+  rpc GetButtons(Empty) returns (GetButtonsResponse) {}
 }

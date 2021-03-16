@@ -18,7 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DataServiceClient interface {
-	SayHello(ctx context.Context, in *SayHelloRequest, opts ...grpc.CallOption) (*SayHelloResponse, error)
+	GetButtons(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetButtonsResponse, error)
 }
 
 type dataServiceClient struct {
@@ -29,9 +29,9 @@ func NewDataServiceClient(cc grpc.ClientConnInterface) DataServiceClient {
 	return &dataServiceClient{cc}
 }
 
-func (c *dataServiceClient) SayHello(ctx context.Context, in *SayHelloRequest, opts ...grpc.CallOption) (*SayHelloResponse, error) {
-	out := new(SayHelloResponse)
-	err := c.cc.Invoke(ctx, "/data.DataService/SayHello", in, out, opts...)
+func (c *dataServiceClient) GetButtons(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetButtonsResponse, error) {
+	out := new(GetButtonsResponse)
+	err := c.cc.Invoke(ctx, "/data.DataService/GetButtons", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -42,15 +42,15 @@ func (c *dataServiceClient) SayHello(ctx context.Context, in *SayHelloRequest, o
 // All implementations should embed UnimplementedDataServiceServer
 // for forward compatibility
 type DataServiceServer interface {
-	SayHello(context.Context, *SayHelloRequest) (*SayHelloResponse, error)
+	GetButtons(context.Context, *Empty) (*GetButtonsResponse, error)
 }
 
 // UnimplementedDataServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedDataServiceServer struct {
 }
 
-func (UnimplementedDataServiceServer) SayHello(context.Context, *SayHelloRequest) (*SayHelloResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SayHello not implemented")
+func (UnimplementedDataServiceServer) GetButtons(context.Context, *Empty) (*GetButtonsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetButtons not implemented")
 }
 
 // UnsafeDataServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -64,20 +64,20 @@ func RegisterDataServiceServer(s grpc.ServiceRegistrar, srv DataServiceServer) {
 	s.RegisterService(&DataService_ServiceDesc, srv)
 }
 
-func _DataService_SayHello_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SayHelloRequest)
+func _DataService_GetButtons_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DataServiceServer).SayHello(ctx, in)
+		return srv.(DataServiceServer).GetButtons(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/data.DataService/SayHello",
+		FullMethod: "/data.DataService/GetButtons",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DataServiceServer).SayHello(ctx, req.(*SayHelloRequest))
+		return srv.(DataServiceServer).GetButtons(ctx, req.(*Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -90,8 +90,8 @@ var DataService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*DataServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "SayHello",
-			Handler:    _DataService_SayHello_Handler,
+			MethodName: "GetButtons",
+			Handler:    _DataService_GetButtons_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
