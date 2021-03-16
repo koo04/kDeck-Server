@@ -1,16 +1,28 @@
 package api
 
 import (
+	"encoding/json"
 	"log"
 
 	"github.com/koo04/kdeck-server/proto/data"
 	"golang.org/x/net/context"
 )
 
-type Server struct {
+type Button struct {
+	Name string `json:"name"`
 }
 
-func (s *Server) SayHello(ctx context.Context, in *data.SayHelloRequest) (*data.SayHelloResponse, error) {
-	log.Printf("Receive message body from client: %s", in.Body)
-	return &data.SayHelloResponse{Body: "Hello From the Server!"}, nil
+type Server struct {
+	Buttons []Button
+}
+
+func (s *Server) GetButtons(ctx context.Context, _ *data.Empty) (*data.GetButtonsResponse, error) {
+	s.Buttons = []Button{{Name: "test"}, {Name: "test2"}}
+
+	j, err := json.Marshal(s.Buttons)
+	if err != nil {
+		log.Fatalf("Error marshaling data: %s", err)
+	}
+	log.Printf("Sending response %s\n", string(j))
+	return &data.GetButtonsResponse{Body: string(j)}, nil
 }
