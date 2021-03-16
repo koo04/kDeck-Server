@@ -10,6 +10,11 @@ message GetButtonsResponse {
   string body = 1;
 }
 
+message PressButtonResponse {
+  string body = 1;
+}
+
 service DataService {
   rpc GetButtons(Empty) returns (GetButtonsResponse) {}
+  rpc PressButton(Empty) returns (PressButtonResponse) {}
 }
