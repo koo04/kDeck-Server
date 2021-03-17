@@ -11,7 +11,8 @@ message GetButtonsResponse {
 }
 
 message PressButtonRequest {
-  string body = 1;
+  string plugin = 1;
+  string action = 2;
 }
 
 service DataService {
