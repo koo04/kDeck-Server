@@ -19,7 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DataServiceClient interface {
 	GetButtons(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*GetButtonsResponse, error)
-	PressButton(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*PressButtonResponse, error)
+	PressButton(ctx context.Context, in *PressButtonRequest, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type dataServiceClient struct {
@@ -39,8 +39,8 @@ func (c *dataServiceClient) GetButtons(ctx context.Context, in *Empty, opts ...g
 	return out, nil
 }
 
-func (c *dataServiceClient) PressButton(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*PressButtonResponse, error) {
-	out := new(PressButtonResponse)
+func (c *dataServiceClient) PressButton(ctx context.Context, in *PressButtonRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, "/data.DataService/PressButton", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -53,7 +53,7 @@ func (c *dataServiceClient) PressButton(ctx context.Context, in *Empty, opts ...
 // for forward compatibility
 type DataServiceServer interface {
 	GetButtons(context.Context, *Empty) (*GetButtonsResponse, error)
-	PressButton(context.Context, *Empty) (*PressButtonResponse, error)
+	PressButton(context.Context, *PressButtonRequest) (*Empty, error)
 }
 
 // UnimplementedDataServiceServer should be embedded to have forward compatible implementations.
@@ -63,7 +63,7 @@ type UnimplementedDataServiceServer struct {
 func (UnimplementedDataServiceServer) GetButtons(context.Context, *Empty) (*GetButtonsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetButtons not implemented")
 }
-func (UnimplementedDataServiceServer) PressButton(context.Context, *Empty) (*PressButtonResponse, error) {
+func (UnimplementedDataServiceServer) PressButton(context.Context, *PressButtonRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PressButton not implemented")
 }
 
@@ -97,7 +97,7 @@ func _DataService_GetButtons_Handler(srv interface{}, ctx context.Context, dec f
 }
 
 func _DataService_PressButton_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Empty)
+	in := new(PressButtonRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -109,7 +109,7 @@ func _DataService_PressButton_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: "/data.DataService/PressButton",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DataServiceServer).PressButton(ctx, req.(*Empty))
+		return srv.(DataServiceServer).PressButton(ctx, req.(*PressButtonRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
