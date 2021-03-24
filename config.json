@@ -1,7 +1,0 @@
-{
-  "obs": {
-    "enabled": true,
-    "host": "localhost",
-    "port": 4444
-  }
-}

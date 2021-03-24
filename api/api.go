@@ -5,7 +5,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/koo04/kdeck-server/config"
+	"github.com/koo04/kdeck-server/plugins/obs"
 	"github.com/koo04/kdeck-server/proto/data"
 	"golang.org/x/net/context"
 )
@@ -18,22 +18,19 @@ type Button struct {
 	Action   string `json:"action"`
 }
 
-type Server struct {
-	Buttons []Button
+type API struct {
+	buttons []Button
 }
 
-func api() {
-	log.Println(*config.GetConfig())
-}
-
-func (s *Server) GetButtons(ctx context.Context, _ *data.Empty) (*data.GetButtonsResponse, error) {
-	s.Buttons = []Button{
+func (api *API) GetButtons(ctx context.Context, _ *data.Empty) (*data.GetButtonsResponse, error) {
+	api.buttons = []Button{
 		{Name: "Desktop Scene", Type: "text", Plugin: "obs", Action: "scene:change:Desktop"},
 		{Name: "Scene 2", Type: "text", Plugin: "obs", Action: "scene:change:Scene 2"},
+		{Name: "Test", Type: "text", Plugin: "obs", Action: "test"},
 		{Name: "Mute Desktop Audio", Type: "image", ImageURL: "https://www.svgrepo.com/show/107080/mute.svg", Plugin: "obs", Action: "mic:mute:Desktop Audio"},
 	}
 
-	j, err := json.Marshal(s.Buttons)
+	j, err := json.Marshal(api.buttons)
 	if err != nil {
 		log.Fatalf("Error marshaling data: %s", err)
 	}
@@ -41,20 +38,24 @@ func (s *Server) GetButtons(ctx context.Context, _ *data.Empty) (*data.GetButton
 	return &data.GetButtonsResponse{Body: string(j)}, nil
 }
 
-func (s *Server) PressButton(ctx context.Context, request *data.PressButtonRequest) (*data.Empty, error) {
+func (api *API) PressButton(ctx context.Context, request *data.PressButtonRequest) (*data.Empty, error) {
 	if request.Plugin == "obs" {
 		var action = strings.Split(request.Action, ":")
 
 		if action[0] == "scene" {
 			if action[1] == "change" {
-				s.obs.ChangeScene(action[2])
+				obs.ChangeScene(action[2])
 			}
 		}
 
 		if action[0] == "mic" {
 			if action[1] == "mute" {
-				s.obs.ToggleMicMute(action[2])
+				obs.ToggleMicMute(action[2])
 			}
+		}
+
+		if action[0] == "test" {
+			obs.Test()
 		}
 	}
 
