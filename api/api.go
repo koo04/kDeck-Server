@@ -3,7 +3,6 @@ package api
 import (
 	"encoding/json"
 	"log"
-	"strings"
 
 	"github.com/koo04/kdeck-server/plugins/obs"
 	"github.com/koo04/kdeck-server/proto/data"
@@ -26,7 +25,7 @@ func (api *API) GetButtons(ctx context.Context, _ *data.Empty) (*data.GetButtons
 	api.buttons = []Button{
 		{Name: "Desktop Scene", Type: "text", Plugin: "obs", Action: "scene:change:Desktop"},
 		{Name: "Scene 2", Type: "text", Plugin: "obs", Action: "scene:change:Scene 2"},
-		{Name: "Test", Type: "text", Plugin: "obs", Action: "test"},
+		{Name: "Record", Type: "text", Plugin: "obs", Action: "record"},
 		{Name: "Mute Desktop Audio", Type: "image", ImageURL: "https://www.svgrepo.com/show/107080/mute.svg", Plugin: "obs", Action: "mic:mute:Desktop Audio"},
 	}
 
@@ -40,23 +39,7 @@ func (api *API) GetButtons(ctx context.Context, _ *data.Empty) (*data.GetButtons
 
 func (api *API) PressButton(ctx context.Context, request *data.PressButtonRequest) (*data.Empty, error) {
 	if request.Plugin == "obs" {
-		var action = strings.Split(request.Action, ":")
-
-		if action[0] == "scene" {
-			if action[1] == "change" {
-				obs.ChangeScene(action[2])
-			}
-		}
-
-		if action[0] == "mic" {
-			if action[1] == "mute" {
-				obs.ToggleMicMute(action[2])
-			}
-		}
-
-		if action[0] == "test" {
-			obs.Test()
-		}
+		obs.RequestHandler(request.Action)
 	}
 
 	return &data.Empty{}, nil

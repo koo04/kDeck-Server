@@ -2,6 +2,7 @@ package obs
 
 import (
 	"log"
+	"strings"
 	"time"
 
 	obsws "github.com/christopher-dG/go-obs-websocket"
@@ -16,6 +17,7 @@ type PluginSettings struct {
 
 var pluginSettings PluginSettings
 var client obsws.Client
+var recording bool
 
 func Initialize() {
 	pluginSettings = PluginSettings{}
@@ -43,7 +45,27 @@ func IsEnabled() bool {
 	return pluginSettings.Enabled
 }
 
-func ChangeScene(sceneName string) {
+func RequestHandler(call string) {
+	var action = strings.Split(call, ":")
+
+	if action[0] == "scene" {
+		if action[1] == "change" {
+			changeScene(action[2])
+		}
+	}
+
+	if action[0] == "mic" {
+		if action[1] == "mute" {
+			toggleMicMute(action[2])
+		}
+	}
+
+	if action[0] == "record" {
+		toggleRecording()
+	}
+}
+
+func changeScene(sceneName string) {
 	req := obsws.NewSetCurrentSceneRequest(sceneName)
 	if err := req.Send(client); err != nil {
 		log.Fatal(err)
@@ -56,7 +78,7 @@ func ChangeScene(sceneName string) {
 	log.Println("Scene Change Status:", resp.Status())
 }
 
-func ToggleMicMute(source string) {
+func toggleMicMute(source string) {
 	req := obsws.NewToggleMuteRequest(source)
 	if err := req.Send(client); err != nil {
 		log.Fatal(err)
@@ -78,7 +100,7 @@ func ToggleMicMute(source string) {
 	}
 }
 
-func GetScenes() {
+func getScenes() {
 	req := obsws.NewGetSceneListRequest()
 	if err := req.Send(client); err != nil {
 		log.Fatal(err)
@@ -92,4 +114,14 @@ func GetScenes() {
 	for _, scene := range res.Scenes {
 		log.Println(scene.Name)
 	}
+}
+
+func toggleRecording() bool {
+	req := obsws.NewStartStopRecordingRequest()
+	if err := req.Send(client); err != nil {
+		log.Fatal(err)
+	}
+
+	recording = !recording
+	return recording
 }
